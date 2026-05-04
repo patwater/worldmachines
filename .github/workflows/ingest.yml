@@ -1,0 +1,38 @@
+name: Ingest Article Submission
+
+on:
+  repository_dispatch:
+    types: [article-submission]
+
+jobs:
+  ingest:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+
+      - run: pip install trafilatura
+
+      - name: Ingest article
+        env:
+          SUBMISSION_PAYLOAD: ${{ toJson(github.event.client_payload) }}
+        run: python scripts/ingest.py
+
+      - name: Build site
+        run: python scripts/build.py
+
+      - name: Commit and push
+        run: |
+          git config user.name  "worldmachines-bot"
+          git config user.email "bot@worldmachines.org"
+          git add content/articles/ index.html
+          git diff --staged --quiet && echo "Nothing to commit" && exit 0
+          git commit -m "Add: ${{ github.event.client_payload.url }}"
+          git push
