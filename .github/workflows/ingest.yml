@@ -36,3 +36,12 @@ jobs:
           git diff --staged --quiet && echo "Nothing to commit" && exit 0
           git commit -m "Add: ${{ github.event.client_payload.url }}"
           git push
+
+      - name: Install wrangler
+        run: npm install -g wrangler
+
+      - name: Deploy to Cloudflare Pages
+        run: wrangler pages deploy . --project-name worldmachines --commit-dirty=true
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
