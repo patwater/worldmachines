@@ -148,6 +148,31 @@ main {
 }
 .sitenav a:hover { color: var(--text); text-decoration: none; }
 
+/* Sort controls */
+
+.sort-controls {
+  font-family: system-ui, sans-serif;
+  font-size: 0.78rem;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 0.75rem;
+}
+
+.sort-btn {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 0.15rem 0.45rem;
+  font-size: 0.75rem;
+  font-family: system-ui, sans-serif;
+  color: var(--muted);
+  cursor: pointer;
+}
+.sort-btn:hover { border-color: var(--text); color: var(--text); }
+.sort-btn.active { background: var(--text); color: var(--bg); border-color: var(--text); }
+
 /* Bibliography */
 
 .bib-main { max-width: var(--max-width); margin: 0 auto 4rem; }
