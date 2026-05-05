@@ -45,13 +45,6 @@ header h1 {
   letter-spacing: -0.02em;
 }
 
-header p.tagline {
-  font-size: 0.9rem;
-  color: var(--muted);
-  font-style: italic;
-  flex: 1;
-  padding-left: 1.5rem;
-}
 
 .submit-link {
   font-family: system-ui, sans-serif;
@@ -68,6 +61,22 @@ main {
   max-width: var(--max-width);
   margin: 0 auto 4rem;
 }
+
+/* Blurb */
+
+.blurb {
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 1.75rem;
+  margin-bottom: 1.75rem;
+}
+
+.blurb p {
+  font-size: 0.95rem;
+  line-height: 1.75;
+  margin-bottom: 0.9rem;
+  color: #2a2a2a;
+}
+.blurb p:last-child { margin-bottom: 0; }
 
 /* Article list */
 

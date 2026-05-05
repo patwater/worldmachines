@@ -4,13 +4,14 @@ Reads content/articles/*.json and regenerates index.html.
 Run locally or as part of the GitHub Actions ingest pipeline.
 """
 import json
-import os
+import re
 from datetime import datetime, timezone
 from pathlib import Path
 
 
 ARTICLES_DIR = Path('content/articles')
-OUT = Path('index.html')
+BLURBS_FILE  = Path('blurbs.md')
+OUT          = Path('index.html')
 
 
 def load_articles():
@@ -22,6 +23,33 @@ def load_articles():
             articles.append(json.load(f))
     articles.sort(key=lambda a: a.get('submitted_at', ''), reverse=True)
     return articles
+
+
+def render_blurb():
+    if not BLURBS_FILE.exists():
+        return ''
+    text = BLURBS_FILE.read_text(encoding='utf-8').strip()
+    paras = []
+    for para in text.split('\n\n'):
+        para = para.strip()
+        if not para:
+            continue
+        # Standard markdown links: [text](url)
+        para = re.sub(
+            r'\[([^\]]+)\]\(([^)]+)\)',
+            r'<a href="\2">\1</a>',
+            para
+        )
+        # Local page refs: [Word] not followed by ( → /word
+        para = re.sub(
+            r'\[([^\]]+)\](?!\()',
+            lambda m: f'<a href="/{m.group(1).lower()}">{m.group(1)}</a>',
+            para
+        )
+        # Italic: _text_
+        para = re.sub(r'_([^_]+)_', r'<em>\1</em>', para)
+        paras.append(f'    <p>{para}</p>')
+    return '\n'.join(paras)
 
 
 def fmt_date(iso):
@@ -65,13 +93,15 @@ def render_article(a):
 
 def build():
     articles = load_articles()
+    blurb = render_blurb()
 
     if articles:
         items = '\n'.join(render_article(a) for a in articles)
-        body = f'  <ul class="articles">\n{items}\n  </ul>'
+        article_html = f'  <ul class="articles">\n{items}\n  </ul>'
     else:
-        body = '  <p class="empty-state">No articles yet.</p>'
+        article_html = '  <p class="empty-state">No articles yet.</p>'
 
+    blurb_section = f'  <section class="blurb">\n{blurb}\n  </section>\n' if blurb else ''
     built = datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
 
     html = f'''\
@@ -86,11 +116,12 @@ def build():
 <body>
   <header>
     <h1>World Machines</h1>
-    <p class="tagline">A collaborative collection of psychohistorical models</p>
     <a href="/submit" class="submit-link">Submit</a>
   </header>
   <main>
-{body}
+{blurb_section}  <section class="articles-section">
+{article_html}
+  </section>
   </main>
   <!-- built: {built} ({len(articles)} articles) -->
 </body>
