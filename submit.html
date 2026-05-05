@@ -30,12 +30,23 @@
       </div>
 
       <div class="field">
-        <label for="type">Type <span class="required">*</span></label>
+        <label for="type">Authorship <span class="required">*</span></label>
         <div class="select-wrap">
           <select id="type" name="type" required>
-            <option value="" disabled selected>Select a type</option>
-            <option value="contribution">Contribution — original work</option>
-            <option value="resource">Resource — reference or background</option>
+            <option value="" disabled selected>Select authorship</option>
+            <option value="contribution">Contribution — your own work</option>
+            <option value="resource">Resource — third-party work</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="format">Format <span class="required">*</span></label>
+        <div class="select-wrap">
+          <select id="format" name="format" required>
+            <option value="" disabled selected>Select format</option>
+            <option value="essay">Essay</option>
+            <option value="short story">Short story</option>
           </select>
         </div>
       </div>
@@ -62,8 +73,9 @@
 
       const url = form.url.value.trim();
       const type = form.type.value;
+      const format = form.format.value;
 
-      if (!url || !type) {
+      if (!url || !type || !format) {
         msg.className = 'form-message error';
         msg.textContent = 'Please fill in all required fields.';
         return;

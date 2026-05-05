@@ -33,7 +33,7 @@ def load_articles():
 
 
 def essays(articles):
-    items = [a for a in articles if a.get('format', 'essay') == 'essay']
+    items = [a for a in articles if a.get('format', 'essay') != 'book']
     items.sort(key=lambda a: a.get('submitted_at', ''), reverse=True)
     return items
 
@@ -86,9 +86,10 @@ def render_essay(a):
     title = escape(a.get('title') or a.get('url') or 'Untitled')
     url   = escape(a.get('url') or '')
     by    = escape(a.get('handle') or a.get('submitted_by', ''))
-    type_ = a.get('type', 'resource')
+    type_  = a.get('type', 'resource')
+    fmt    = a.get('format', 'essay')
     badge_class  = 'badge-contribution' if type_ == 'contribution' else 'badge-resource'
-    badge_label  = type_.capitalize()
+    badge_label  = fmt.title()
     date  = fmt_date(a.get('submitted_at', ''))
     desc  = a.get('description') or ''
     title_html = f'<a href="{url}">{title}</a>' if url else title

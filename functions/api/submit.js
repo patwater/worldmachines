@@ -40,6 +40,7 @@ export async function onRequestPost({ request, env }) {
 
   const url = formData.get('url')?.trim() ?? '';
   const type = formData.get('type') ?? '';
+  const format = formData.get('format')?.trim() || 'essay';
   const description = formData.get('description')?.trim() || null;
 
   if (!url || !['contribution', 'resource'].includes(type)) {
@@ -54,6 +55,7 @@ export async function onRequestPost({ request, env }) {
     url,
     handle,
     type,
+    format,
     description,
     submitted_at: new Date().toISOString(),
   };

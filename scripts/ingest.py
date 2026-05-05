@@ -49,6 +49,7 @@ def main():
     url = payload['url']
     handle = payload['handle']
     type_ = payload['type']
+    format_ = payload.get('format') or 'essay'
     description = payload.get('description') or None
     submitted_at = payload['submitted_at']
 
@@ -71,7 +72,7 @@ def main():
         'handle': handle,
         'submitted_at': submitted_at,
         'type': type_,
-        'format': 'essay',
+        'format': format_,
         'description': description,
         'extraction_success': success,
         'extracted_text': text,
