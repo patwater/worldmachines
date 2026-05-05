@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Your Profile — World Machines</title>
+  <title>Profile — World Machines</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -22,25 +22,30 @@
 
   <div class="form-wrap">
     <h2>Your profile</h2>
-    <p class="form-intro">Your handle is set by the admin and cannot be changed here. Update your display name, site, and bio below.</p>
-
-    <div id="handle-display" style="font-family:system-ui,sans-serif;font-size:0.85rem;color:var(--muted);margin-bottom:1.5rem;display:none">
-      Signed in as <strong id="handle-value"></strong> (<span id="email-value"></span>)
-    </div>
+    <p class="form-intro">Update your display name, site URL, and bio. Handle and email are set by the admin.</p>
 
     <form id="profile-form" novalidate>
       <div class="field">
-        <label for="name">Display name</label>
-        <input type="text" id="name" name="name" placeholder="First Last or preferred name">
+        <label>Email <span class="optional">(read-only)</span></label>
+        <input type="email" id="p-email" readonly>
       </div>
       <div class="field">
-        <label for="url">Site URL</label>
-        <input type="url" id="url" name="url" placeholder="https://your.site">
+        <label>Handle <span class="optional">(read-only)</span></label>
+        <input type="text" id="p-handle" readonly>
       </div>
       <div class="field">
-        <label for="bio">Bio <span class="optional">(shown on contributors page)</span></label>
-        <input type="text" id="bio" name="bio" placeholder="your.site or a brief description">
+        <label for="p-name">Full name</label>
+        <input type="text" id="p-name" placeholder="First Last or preferred name">
       </div>
+      <div class="field">
+        <label for="p-url">Site URL</label>
+        <input type="url" id="p-url" placeholder="https://your.site">
+      </div>
+      <div class="field">
+        <label for="p-bio">Bio <span class="optional">(shown on contributors page)</span></label>
+        <input type="text" id="p-bio" placeholder="your.site or a brief description">
+      </div>
+      <p class="form-note">Contact admin (vgr) to update email or handle.</p>
       <button type="submit" id="save-btn">Save</button>
       <div class="form-message" id="form-message"></div>
     </form>
@@ -49,46 +54,51 @@
   <script>
     const msg = document.getElementById('form-message');
 
-    function setMsg(text, ok) {
-      msg.textContent = text;
-      msg.className = 'form-message ' + (ok ? 'success' : 'error');
-    }
-
-    // Load current profile
     fetch('/api/profile')
       .then(r => r.json())
       .then(data => {
-        if (data.error) { setMsg(data.error, false); return; }
-        document.getElementById('handle-value').textContent = '@' + data.handle;
-        document.getElementById('email-value').textContent  = data.email;
-        document.getElementById('handle-display').style.display = 'block';
-        document.getElementById('name').value = data.name || '';
-        document.getElementById('url').value  = data.url  || '';
-        document.getElementById('bio').value  = data.bio  || '';
+        if (data.error) {
+          msg.className = 'form-message error';
+          msg.textContent = data.error;
+          return;
+        }
+        document.getElementById('p-email').value  = data.email  || '';
+        document.getElementById('p-handle').value = data.handle || '';
+        document.getElementById('p-name').value   = data.name   || '';
+        document.getElementById('p-url').value    = data.url    || '';
+        document.getElementById('p-bio').value    = data.bio    || '';
       })
-      .catch(() => setMsg('Could not load profile.', false));
+      .catch(() => {
+        msg.className = 'form-message error';
+        msg.textContent = 'Could not load profile.';
+      });
 
     document.getElementById('profile-form').addEventListener('submit', async (e) => {
       e.preventDefault();
       const btn = document.getElementById('save-btn');
       btn.disabled = true;
       btn.textContent = 'Saving…';
-
       try {
         const res = await fetch('/api/profile', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            name: document.getElementById('name').value.trim(),
-            url:  document.getElementById('url').value.trim(),
-            bio:  document.getElementById('bio').value.trim(),
+            name: document.getElementById('p-name').value.trim(),
+            url:  document.getElementById('p-url').value.trim(),
+            bio:  document.getElementById('p-bio').value.trim(),
           }),
         });
         const data = await res.json();
-        if (res.ok) setMsg('Profile saved.', true);
-        else setMsg(data.error || 'Save failed.', false);
+        if (res.ok) {
+          msg.className = 'form-message success';
+          msg.textContent = 'Profile saved.';
+        } else {
+          msg.className = 'form-message error';
+          msg.textContent = data.error || 'Save failed.';
+        }
       } catch {
-        setMsg('Network error.', false);
+        msg.className = 'form-message error';
+        msg.textContent = 'Network error.';
       } finally {
         btn.disabled = false;
         btn.textContent = 'Save';
