@@ -28,6 +28,8 @@
 
 ## Done
 
+- **2026-05-08** — Added `/devlog` page (generated from `website/devlog.md`); `devlog-check` GitHub Actions workflow; `CONTRIBUTING.md` with devlog rule
+- **2026-05-08** — Ruleset relaxed to soft governance (bot can push directly); `approval-policy` check + CODEOWNERS remain advisory
 - **2026-05-07** — Reorganized repo into `raw-notes/`, `wiki/`, and `website/`; moved Cloudflare Pages app under `website/`; added CODEOWNERS/review-policy docs
 - **2026-05-04** — Added /profile + /api/profile to Cloudflare Access policy (collaborator email allowlist); tested working
 - **2026-05-04** — Backfilled first-publication years for 31/38 books via Open Library API (`scripts/backfill_book_dates.py`)
