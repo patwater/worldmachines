@@ -5,6 +5,11 @@
 - 60 articles in website/content/articles/ (22 contributions, 38 resources/books)
 - Repo reorganized into raw-notes/, wiki/, and website/ collaboration zones
 
+## Open proposals (GitHub Issues)
+
+- **Issue #2** — [Commenting system for contributions and resources](https://github.com/worldmachines/worldmachines/issues/2) — awaiting contributor feedback
+- **Issue #3** — [Web form for raw-notes capture (non-GitHub contributors)](https://github.com/worldmachines/worldmachines/issues/3) — awaiting contributor feedback
+
 ## Upcoming
 
 ### Near-term
