@@ -115,6 +115,18 @@ Each file in `website/content/articles/` contains:
 4. GitHub Actions runs from `website/`: `scripts/ingest.py`, then `scripts/build.py`.
 5. The workflow commits generated article/page changes and deploys `website/` to Cloudflare Pages.
 
+## Local credentials
+
+`.env.keys` at the repo root holds Cloudflare API tokens for local development and
+manual CI re-runs. It is gitignored and Dropbox-ignored (`com.dropbox.ignored`).
+
+| Variable | Scope | Used by |
+|----------|-------|---------|
+| `CF_AI_TOKEN` | Workers AI: Edit | `tools/notes-pipeline/notes_to_parquet.py --embed` |
+| `CF_R2_TOKEN` | Workers R2 Storage: Edit | `wrangler r2 object put worldmachines-notes/notes.parquet` |
+
+The same values are stored as GitHub Actions secrets `CF_AI_TOKEN` and `CF_R2_TOKEN`.
+
 ## Rebuilding the site locally
 
 ```bash

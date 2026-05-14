@@ -1,5 +1,6 @@
 .DS_Store
 .env
+.env.keys
 .wrangler/
 .opentrace/
 .opentrace-index.log
